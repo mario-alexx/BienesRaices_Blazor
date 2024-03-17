@@ -26,9 +26,13 @@ namespace BienesRaices.Modelos
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
         public DateTime FechaActualizacion { get; set; }
 
+        // Relación con tabla categoria
         public int CategoriaId { get; set; }
         [ForeignKey("CategoriaId")]
         public virtual Categoria Categoria { get; set; }
+
+        // Relación con tabla imagenPropiedad
+        public virtual ICollection<ImagenPropiedad> ImagenPropiedad { get; set; }
 
     }
 }

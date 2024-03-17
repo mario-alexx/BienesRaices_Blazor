@@ -1,8 +1,10 @@
 ﻿@page "/crear-propiedad"
 @using Modelos.DTO
 @using Repositorio.IRepositorio
+@using Servicios
 @inject IPropiedadRepositorio PropiedadRepositorio
 @inject ICategoriaRepositorio CategoriaRepositorio
+@inject ISubidaArchivo SubidaArchivo
 @inject NavigationManager navigationManager
 @inject IJSRuntime JsRuntime
 
@@ -143,6 +145,17 @@
                     </div>
                 </div>
                 <br />
+
+                <div class="form-group" style="padding-top:30px; padding-bottom:30px">
+                    <hr/>
+                    <h4>Imágenes Propiedad</h4>
+
+                    <InputFile OnChange="ManejadorOnSubidaArchivo" multiple/>
+                    
+                    <div class="row">
+                        
+                    </div>
+                </div>
                                
                 <div class="form-group">
                     <div class="row">
@@ -164,6 +177,7 @@
 @code {
     private PropiedadDTO propiedadDTO { get; set; } = new PropiedadDTO();
     private DropDownCategoriaDTO categoriaSeleccionada = new DropDownCategoriaDTO();
+    private bool IniciadoProcesoSubidaImagen { get; set; } = false;
 
     // Obtener la lista de categorias del dropdown
     private IEnumerable<DropDownCategoriaDTO> dropDownCategoriaDTO { get; set; } = new List<DropDownCategoriaDTO>();
@@ -175,6 +189,58 @@
 
     private async Task ManejadorOnCrearPropiedad()
     {
-        
+
+    }
+
+    private async Task ManejadorOnSubidaArchivo(InputFileChangeEventArgs e)
+    {
+        IniciadoProcesoSubidaImagen = true;
+        try
+        {
+            var imagenes = new List<string>();
+            if(e.GetMultipleFiles().Count() > 0) // Si hay mas de 1 img
+            {
+                foreach (var file in e.GetMultipleFiles())
+                {
+                    FileInfo fileInfo = new FileInfo(file.Name);
+                    if(fileInfo.Extension.ToLower() == ".jpg"
+                       || fileInfo.Extension.ToLower() == ".png"
+                       || fileInfo.Extension.ToLower() == ".jpeg"
+                    )
+                    {
+                        var uploadedImagePatch = await SubidaArchivo.SubirArchivo(file);
+                        imagenes.Add(uploadedImagePatch);
+                    }
+                    else
+                    {
+                        await JsRuntime.ToastrError("Porfavor seleccione unicamente .jpg/.jpeg/.png");
+                        return;
+                    }
+                }
+
+                if(imagenes.Any())
+                {
+                    if(propiedadDTO.UrlImagenes != null && propiedadDTO.UrlImagenes.Any())
+                    {
+                        propiedadDTO.UrlImagenes.AddRange(imagenes);
+                    } 
+                    else
+                    {
+                        propiedadDTO.UrlImagenes = new List<string>();
+                        propiedadDTO.UrlImagenes.AddRange(imagenes);
+                    }
+                }
+                else
+                {
+                    await JsRuntime.ToastrError("Fallo la subida de imágenes");
+                    return;
+                }
+            }
+            IniciadoProcesoSubidaImagen = false;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 }

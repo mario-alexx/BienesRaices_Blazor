@@ -2,6 +2,7 @@ using BienesRaices.Areas.Identity;
 using BienesRaices.Data;
 using BienesRaices.Repositorio;
 using BienesRaices.Repositorio.IRepositorio;
+using BienesRaices.Servicios;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -26,6 +27,8 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 builder.Services.AddScoped<ICategoriaRepositorio, CategoriaRepositorio>();
 builder.Services.AddScoped<IPropiedadRepositorio, PropiedadRepositorio>();
+builder.Services.AddScoped<IImagenPropiedadRepositorio, ImagenPropiedadRepositorio>();
+builder.Services.AddScoped<ISubidaArchivo, SubidaArchivo>();
 
 var app = builder.Build();
 

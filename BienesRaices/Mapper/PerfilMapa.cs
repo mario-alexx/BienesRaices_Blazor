@@ -13,6 +13,8 @@ namespace BienesRaices.Mapper
 
             CreateMap<Propiedad, PropiedadDTO>().ReverseMap();
             CreateMap<Categoria, DropDownCategoriaDTO>().ReverseMap();
+            CreateMap<ImagenPropiedad, ImagenPropiedadDTO>().ReverseMap();
+
         }
     }
 }
