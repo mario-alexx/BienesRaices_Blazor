@@ -8,9 +8,10 @@ namespace BienesRaices.Repositorio.IRepositorio
         public Task<CategoriaDTO> GetCategoria(int categoriaId);
         public Task<CategoriaDTO> CrearCategoria(CategoriaDTO categoriaDTO); 
         public Task<CategoriaDTO> ActualizarCategoria(int categoriaId, CategoriaDTO categoriaDTO);
-        public Task<int> BorrarCategoria(int categoriaDTO);
+        public Task<int> BorrarCategoria(int categoriaId);
 
         public Task<CategoriaDTO> NombreCategoriaExiste(string nombre);
-        //public Task<IEnumerable<CategoriaDTO>> GetDropDownCategorias();
+        
+        public Task<IEnumerable<DropDownCategoriaDTO>> GetDropDownCategorias();
     }
 }

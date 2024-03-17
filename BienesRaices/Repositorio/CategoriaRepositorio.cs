@@ -27,7 +27,7 @@ namespace BienesRaices.Repositorio
                     // Validación para actualizar
                     Categoria categoria = await _bd.Categoria.FindAsync(categoriaId);
                     Categoria cate = _mapper.Map<CategoriaDTO, Categoria>(categoriaDTO, categoria);
-                    cate.FechaActualizacoin = DateTime.Now;
+                    cate.FechaActualizacion = DateTime.Now;
                     var categoriaActualizada = _bd.Categoria.Update(cate);
                     await _bd.SaveChangesAsync();
                     return _mapper.Map<Categoria, CategoriaDTO>(categoriaActualizada.Entity);
@@ -43,9 +43,9 @@ namespace BienesRaices.Repositorio
             }
         }
 
-        public async Task<int> BorrarCategoria(int categoriaDTO)
+        public async Task<int> BorrarCategoria(int categoriaId)
         {
-            var categoria = await _bd.Categoria.FindAsync(categoriaDTO);
+            var categoria = await _bd.Categoria.FindAsync(categoriaId);
             if(categoria != null)
             {
                 _bd.Categoria.Remove(categoria);
@@ -84,6 +84,20 @@ namespace BienesRaices.Repositorio
                 CategoriaDTO categoriaDTO =
                     _mapper.Map<Categoria, CategoriaDTO>(await _bd.Categoria.FirstOrDefaultAsync(c => c.Id == categoriaId));
                 return categoriaDTO;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<DropDownCategoriaDTO>> GetDropDownCategorias()
+        {
+            try
+            {
+                IEnumerable<DropDownCategoriaDTO> dropDownCategoriaDTO =
+                    _mapper.Map<IEnumerable<Categoria>, IEnumerable<DropDownCategoriaDTO>>(_bd.Categoria);
+                return dropDownCategoriaDTO;
             }
             catch (Exception ex)
             {

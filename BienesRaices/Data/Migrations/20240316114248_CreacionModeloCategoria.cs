@@ -20,7 +20,7 @@ namespace BienesRaices.Data.Migrations
                     NombreCategoria = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaActualizacoin = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    FechaActualizacion = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

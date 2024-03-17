@@ -1,0 +1,180 @@
+﻿@page "/crear-propiedad"
+@using Modelos.DTO
+@using Repositorio.IRepositorio
+@inject IPropiedadRepositorio PropiedadRepositorio
+@inject ICategoriaRepositorio CategoriaRepositorio
+@inject NavigationManager navigationManager
+@inject IJSRuntime JsRuntime
+
+<h1 class="text-center">Nueva Propiedad</h1>
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-7">
+                <h2 class="text-dark">Nueva Categorías</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <EditForm Model="propiedadDTO" OnValidSubmit="@( () => ManejadorOnCrearPropiedad())">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="container">
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Nombre:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputText @bind-Value="propiedadDTO.Nombre" class="form-control" placeholder="Ingrese el nombre de la propiedad" />
+                            <ValidationMessage For="() => propiedadDTO.Nombre"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Descripción:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputText @bind-Value="propiedadDTO.Descripcion" class="form-control" placeholder="Ingrese la descripción de la propiedad" />
+                            <ValidationMessage For="() => propiedadDTO.Descripcion"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Área:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputNumber @bind-Value="propiedadDTO.Area" class="form-control" placeholder="Ingrese el área de la propiedad" />
+                            <ValidationMessage For="() => propiedadDTO.Area"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Habitaciones:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputNumber @bind-Value="propiedadDTO.Habitaciones" class="form-control" placeholder="Ingrese cantidad de habitaciones" />
+                            <ValidationMessage For="() => propiedadDTO.Habitaciones"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Baños:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputNumber @bind-Value="propiedadDTO.Banios" class="form-control" placeholder="Ingrese la cantidad de baños" />
+                            <ValidationMessage For="() => propiedadDTO.Banios"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Parqueadero:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputNumber @bind-Value="propiedadDTO.Parqueadero" class="form-control" placeholder="Ingrese la cantidad de parqueaderos" />
+                            <ValidationMessage For="() => propiedadDTO.Parqueadero"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Precio:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputNumber @bind-Value="propiedadDTO.Precio" class="form-control" placeholder="Ingrese el precio de la propiedad" />
+                            <ValidationMessage For="() => propiedadDTO.Precio"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Activo:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputCheckbox @bind-Value="propiedadDTO.Activo"/>
+                            <ValidationMessage For="() => propiedadDTO.Activo"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>Categoría:</label>
+                        </div>
+                        <div class="col-6">
+                            <InputSelect @bind-Value="categoriaSeleccionada.Id" class="form-control">
+                                @foreach(var categoria in dropDownCategoriaDTO)
+                                {
+                                    <option value="@categoria.Id">@categoria.NombreCategoria</option>
+                                }
+
+                            </InputSelect>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                               
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-2">
+                            <button type="submit" class="btn btn-success"><i class="bi bi-gear-fill"></i>&nbsp; Guardar</button>
+                        </div>
+                        <div class="col-6">
+                            <NavLink href="propiedades" class="btn btn-secondary"><i class="bi bi-arrow-left-circle-fill"></i>&nbsp; Volver</NavLink>
+                        </div>
+                    </div>
+                </div>
+                <br />
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+
+@code {
+    private PropiedadDTO propiedadDTO { get; set; } = new PropiedadDTO();
+    private DropDownCategoriaDTO categoriaSeleccionada = new DropDownCategoriaDTO();
+
+    // Obtener la lista de categorias del dropdown
+    private IEnumerable<DropDownCategoriaDTO> dropDownCategoriaDTO { get; set; } = new List<DropDownCategoriaDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        dropDownCategoriaDTO = await CategoriaRepositorio.GetDropDownCategorias();
+    }
+
+    private async Task ManejadorOnCrearPropiedad()
+    {
+        
+    }
+}

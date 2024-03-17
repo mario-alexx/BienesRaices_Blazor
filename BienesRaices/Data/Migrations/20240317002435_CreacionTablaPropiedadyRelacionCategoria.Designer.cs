@@ -36,7 +36,7 @@ namespace BienesRaices.Data.Migrations
                     b.Property<string>("Descripcion")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("FechaActualizacoin")
+                    b.Property<DateTime>("FechaActualizacion")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("FechaCreacion")

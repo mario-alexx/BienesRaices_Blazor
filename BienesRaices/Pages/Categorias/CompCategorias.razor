@@ -27,9 +27,9 @@
                 </tr>
             </thead>
             <tbody>
-                @if(categoriaDTO.Count() > 0)
+                @if (categoriaDTO.Count() > 0)
                 {
-                    foreach (var categoria in categoriaDTO)
+                    @foreach (var categoria in categoriaDTO)
                     {
                         <tr>
                             <td>@categoria.Id</td>
