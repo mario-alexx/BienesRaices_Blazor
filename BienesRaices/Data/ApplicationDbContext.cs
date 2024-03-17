@@ -13,5 +13,6 @@ namespace BienesRaices.Data
 
         // Agregar Modelos
         public DbSet<Categoria> Categoria { get; set; }
+        public DbSet<Propiedad> Propiedad { get; set; }
     }
 }

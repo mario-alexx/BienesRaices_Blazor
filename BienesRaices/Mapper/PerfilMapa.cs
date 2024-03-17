@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using BienesRaices.DTO;
 using BienesRaices.Modelos;
+using BienesRaices.Modelos.DTO;
 
 namespace BienesRaices.Mapper
 {
@@ -10,6 +10,8 @@ namespace BienesRaices.Mapper
         {
             CreateMap<CategoriaDTO, Categoria>();
             CreateMap<Categoria, CategoriaDTO>();
+
+            CreateMap<Propiedad, PropiedadDTO>().ReverseMap();
         }
     }
 }

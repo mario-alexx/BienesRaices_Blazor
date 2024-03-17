@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BienesRaices.Data;
-using BienesRaices.DTO;
 using BienesRaices.Modelos;
+using BienesRaices.Modelos.DTO;
 using BienesRaices.Repositorio.IRepositorio;
 using Microsoft.EntityFrameworkCore;
 

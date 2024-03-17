@@ -1,0 +1,43 @@
+﻿@page "/blazor-javascript"
+@inject IJSRuntime JsRuntime
+
+<h3>CompBlazorJavascript</h3>
+
+<div class="row mt-4">
+    <div class="col-4">
+        <button class="btn btn-success" @onclick="DemoSuccess">Toastr Success</button>
+        <button class="btn btn-danger" @onclick="DemoError">Toastr Error</button>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-4">
+        <button class="btn btn-success" @onclick="DemoSuccessSwal">Swal Success</button>
+        <button class="btn btn-danger" @onclick="DemoErrorSwal">Swal Error</button>
+    </div>
+</div>
+
+@code {
+
+    private async Task DemoSuccess()
+    {
+        // await JsRuntime.InvokeVoidAsync("ShowToastr", "success", "Tarea compleata!");
+        await JsRuntime.ToastrSuccess("Tarea completada!");
+
+    }
+    private async Task DemoError()
+    {
+        await JsRuntime.ToastrError("Error, tarea incompleta");
+    }
+
+
+    private async Task DemoSuccessSwal()
+    {
+        await JsRuntime.InvokeVoidAsync("ShowSwal", "success", "Tarea compleata!");
+
+    }
+    private async Task DemoErrorSwal()
+    {
+        await JsRuntime.InvokeVoidAsync("ShowSwal", "error", "Tarea incompleta!");
+    }
+}

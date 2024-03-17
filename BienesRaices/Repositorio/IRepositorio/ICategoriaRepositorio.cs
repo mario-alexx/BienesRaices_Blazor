@@ -1,4 +1,4 @@
-﻿using BienesRaices.DTO;
+﻿using BienesRaices.Modelos.DTO;
 
 namespace BienesRaices.Repositorio.IRepositorio
 {

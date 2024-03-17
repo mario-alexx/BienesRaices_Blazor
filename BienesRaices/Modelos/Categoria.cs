@@ -11,5 +11,6 @@ namespace BienesRaices.Modelos
         public string Descripcion { get; set; }
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
         public DateTime FechaActualizacoin { get; set; }
+        public virtual ICollection<Propiedad> Propiedad { get; set; }
     }
 }

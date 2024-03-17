@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BienesRaices.DTO
+namespace BienesRaices.Modelos.DTO
 {
     public class CategoriaDTO
     {
