@@ -17,7 +17,7 @@ namespace BienesRaices.Servicios
         {
             try
             {
-                var path = $"{_webHostEnvironment.WebRootPath}\\ImagenesPropiedades\\{nombreArchivo}";
+                var path = $"{_webHostEnvironment.WebRootPath}\\{nombreArchivo}";
                 if(File.Exists(path))
                 {
                     File.Delete(path);
@@ -53,7 +53,7 @@ namespace BienesRaices.Servicios
                 }
 
                 var url = $"{_configuration.GetValue<string>("ServerUrl")}";
-                var fullPath = $"{url}ImagenesPropiesdes/{fileName}";
+                var fullPath = $"{url}ImagenesPropiedades/{fileName}";
                 return fullPath;
             }
             catch (Exception ex)

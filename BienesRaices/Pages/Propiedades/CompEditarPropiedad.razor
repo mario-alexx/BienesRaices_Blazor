@@ -1,4 +1,4 @@
-﻿@page "/crear-propiedad"
+﻿@page "/editar-propiedad/{Id:int}"
 @using Modelos.DTO
 @using Repositorio.IRepositorio
 @using Servicios
@@ -9,18 +9,18 @@
 @inject NavigationManager navigationManager
 @inject IJSRuntime JsRuntime
 
-<h1 class="text-center">Nueva Propiedad</h1>
+<h1 class="text-center">Editar Propiedad</h1>
 
 <div class="card">
     <div class="card-header">
         <div class="row">
             <div class="col-7">
-                <h2 class="text-dark">Nueva Propiedad</h2>
+                <h2 class="text-dark">Editar Propiedad</h2>
             </div>
         </div>
     </div>
     <div class="card-body">
-        <EditForm Model="propiedadDTO" OnValidSubmit="@( () => ManejadorOnCrearPropiedad())">
+        <EditForm Model="propiedadDTO" OnValidSubmit="@( () => ManejadorOnEditarPropiedad())">
             <DataAnnotationsValidator />
             <ValidationSummary />
             <div class="container">
@@ -184,7 +184,7 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-2">
-                            <button type="submit" class="btn btn-success"><i class="bi bi-gear-fill"></i>&nbsp; Guardar</button>
+                            <button type="submit" class="btn btn-success"><i class="bi bi-gear-fill"></i>&nbsp; Actualizar</button>
                         </div>
                         <div class="col-6">
                             <NavLink href="propiedades" class="btn btn-secondary"><i class="bi bi-arrow-left-circle-fill"></i>&nbsp; Volver</NavLink>
@@ -203,6 +203,9 @@
     private DropDownCategoriaDTO categoriaSeleccionada = new DropDownCategoriaDTO();
     private bool IniciadoProcesoSubidaImagen { get; set; } = false;
     private ImagenPropiedadDTO imagenDTO { get; set; } = new ImagenPropiedadDTO();
+    
+    [Parameter]
+    public int? Id { get; set; }
 
     // Obtener la lista de categorias del dropdown
     private IEnumerable<DropDownCategoriaDTO> dropDownCategoriaDTO { get; set; } = new List<DropDownCategoriaDTO>();
@@ -210,21 +213,36 @@
     protected override async Task OnInitializedAsync()
     {
         dropDownCategoriaDTO = await CategoriaRepositorio.GetDropDownCategorias();
+
+        if(Id != null)
+        {
+            propiedadDTO = await PropiedadRepositorio.GetPropiedad(Id.Value);
+
+            if(propiedadDTO?.ImagenPropiedad != null)
+            {
+                propiedadDTO.UrlImagenes = propiedadDTO.ImagenPropiedad.
+                                        Select(u => u.UrlImagenPropiedad).ToList();
+            }
+        }
     }
 
-    private async Task ManejadorOnCrearPropiedad()
+    private async Task ManejadorOnEditarPropiedad()
     {
-        var nombrePropiedad = await PropiedadRepositorio.NombrePropiedadExiste(propiedadDTO.Nombre);
-        if(nombrePropiedad != null)
-        {
-            await JsRuntime.ToastrError("El nombrde la propiedad ya existe");
-            return;
-        }
-        propiedadDTO.CategoriaId = categoriaSeleccionada.Id;
-        var crearPropiedad = await PropiedadRepositorio.CrearPropiedad(propiedadDTO);
-        await AgregarImagenesPropiedad(crearPropiedad);
-        await JsRuntime.ToastrSuccess("Propiedad crada correctamente");
-        navigationManager.NavigateTo("propiedades");
+        // var nombrePropiedad = await PropiedadRepositorio.NombrePropiedadExiste(propiedadDTO.Nombre);
+        // if(nombrePropiedad != null)
+        // {
+        //     await JsRuntime.ToastrError("El nombrde la propiedad ya existe");
+        //     return;
+        // }
+        // propiedadDTO.CategoriaId = categoriaSeleccionada.Id;
+        // var crearPropiedad = await PropiedadRepositorio.CrearPropiedad(propiedadDTO);
+        // await AgregarImagenesPropiedad(crearPropiedad);
+        // await JsRuntime.ToastrSuccess("Propiedad crada correctamente");
+        // navigationManager.NavigateTo("propiedades");
+    
+        
+        
+    
     }
 
     private async Task ManejadorOnSubidaArchivo(InputFileChangeEventArgs e)

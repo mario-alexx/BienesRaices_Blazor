@@ -69,7 +69,8 @@ namespace BienesRaices.Repositorio
             try
             {
                 IEnumerable<PropiedadDTO> propiedadDTO =
-                    _mapper.Map<IEnumerable<Propiedad>, IEnumerable<PropiedadDTO>>(_bd.Propiedad);
+                    _mapper.Map<IEnumerable<Propiedad>, IEnumerable<PropiedadDTO>>
+                    (_bd.Propiedad.Include(x => x.ImagenPropiedad));
                 return propiedadDTO;
             }
             catch (Exception ex)
