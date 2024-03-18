@@ -203,7 +203,8 @@
     private DropDownCategoriaDTO categoriaSeleccionada = new DropDownCategoriaDTO();
     private bool IniciadoProcesoSubidaImagen { get; set; } = false;
     private ImagenPropiedadDTO imagenDTO { get; set; } = new ImagenPropiedadDTO();
-    
+    private List<string> NombresImagenesBorradas { get; set; } = new List<string>();
+
     [Parameter]
     public int? Id { get; set; }
 
@@ -228,21 +229,26 @@
 
     private async Task ManejadorOnEditarPropiedad()
     {
-        // var nombrePropiedad = await PropiedadRepositorio.NombrePropiedadExiste(propiedadDTO.Nombre);
-        // if(nombrePropiedad != null)
-        // {
-        //     await JsRuntime.ToastrError("El nombrde la propiedad ya existe");
-        //     return;
-        // }
-        // propiedadDTO.CategoriaId = categoriaSeleccionada.Id;
-        // var crearPropiedad = await PropiedadRepositorio.CrearPropiedad(propiedadDTO);
-        // await AgregarImagenesPropiedad(crearPropiedad);
-        // await JsRuntime.ToastrSuccess("Propiedad crada correctamente");
-        // navigationManager.NavigateTo("propiedades");
-    
-        
-        
-    
+        // Obtener el Id de la categoria
+        propiedadDTO.CategoriaId = categoriaSeleccionada.Id;
+
+        var resultadoActualizarPropiedad = await PropiedadRepositorio.ActualizarPropiedad(propiedadDTO.Id, propiedadDTO);   
+        if (propiedadDTO.UrlImagenes != null && propiedadDTO.UrlImagenes.Any() || NombresImagenesBorradas != null && NombresImagenesBorradas.Any())
+        {
+            if(NombresImagenesBorradas != null && NombresImagenesBorradas.Any())
+            {
+                foreach (var nombreImagenBorrada in NombresImagenesBorradas)
+                {
+                    var nombreImagen = nombreImagenBorrada.Replace($"{navigationManager.BaseUri}ImagenesPropiedades/", "");
+                    var resultado = SubidaArchivo.BorrarArchivo(nombreImagen);
+                    await ImagenPropiedadRepositorio.BorrarPropiedadImagenPorUrlImagen(nombreImagenBorrada);
+                }
+            }
+
+            await AgregarImagenesPropiedad(resultadoActualizarPropiedad);
+        }
+        await JsRuntime.ToastrSuccess("Propiedad actualizada correctamente");
+        navigationManager.NavigateTo("propiedades");
     }
 
     private async Task ManejadorOnSubidaArchivo(InputFileChangeEventArgs e)
@@ -304,10 +310,9 @@
             var imagenIndex = propiedadDTO.UrlImagenes.FindIndex(x => x == urlImagen);
             var nombreImagen = urlImagen.Replace($"{navigationManager.BaseUri}ImagenesPropiedades/", "");
 
-            if (propiedadDTO.Id == 0)
-            {
-                var result = SubidaArchivo.BorrarArchivo(nombreImagen);
-            }
+            NombresImagenesBorradas ??= new List<string>();
+            NombresImagenesBorradas.Add(urlImagen);
+
             propiedadDTO.UrlImagenes.RemoveAt(imagenIndex);
         }
         catch (Exception ex)
@@ -322,9 +327,9 @@
         foreach (var urlImagen in propiedadDTO.UrlImagenes)
         {
             if(propiedadDTO.ImagenPropiedad == null || 
-                propiedadDTO.ImagenPropiedad.Where(x => x.UrlImagenPropiedad == urlImagen).Count() > 0)
+                propiedadDTO.ImagenPropiedad.Where(x => x.UrlImagenPropiedad == urlImagen).Count() == 0)
             {
-                imagenDTO = new()
+                imagenDTO = new ImagenPropiedadDTO()
                 {
                     PropiedadId = propDTO.Id,
                     UrlImagenPropiedad = urlImagen

@@ -1,7 +1,7 @@
 ﻿@page "/crear-propiedad"
 @using Modelos.DTO
-@using Repositorio.IRepositorio
-@using Servicios
+@using BienesRaices.Repositorio.IRepositorio
+@using BienesRaices.Servicios
 @inject IPropiedadRepositorio PropiedadRepositorio
 @inject ICategoriaRepositorio CategoriaRepositorio
 @inject IImagenPropiedadRepositorio ImagenPropiedadRepositorio
@@ -304,7 +304,7 @@
         foreach (var urlImagen in propiedadDTO.UrlImagenes)
         {
             if(propiedadDTO.ImagenPropiedad == null || 
-                propiedadDTO.ImagenPropiedad.Where(x => x.UrlImagenPropiedad == urlImagen).Count() > 0)
+                propiedadDTO.ImagenPropiedad.Where(x => x.UrlImagenPropiedad == urlImagen).Count() == 0)
             {
                 imagenDTO = new()
                 {

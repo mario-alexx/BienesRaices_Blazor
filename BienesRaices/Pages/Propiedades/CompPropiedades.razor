@@ -1,7 +1,11 @@
 ﻿@page "/propiedades"
 @using Modelos.DTO
-@using Repositorio.IRepositorio
+@using BienesRaices.Repositorio.IRepositorio
+@using BienesRaices.Servicios
 @inject IPropiedadRepositorio PropiedadRepositorio
+@inject IJSRuntime JsRuntime
+@inject NavigationManager navigationManager
+@inject ISubidaArchivo SubidaArchivo
 
 <h1 class="text-center">Propiedades</h1>
 
@@ -29,6 +33,7 @@
                     <th>Parqueadero</th>
                     <th>Precio</th>
                     <th>Activo</th>
+                    <th>Categoría</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -47,6 +52,7 @@
                             <td>@propiedad.Parqueadero</td>
                             <td>@propiedad.Precio</td>
                             <td>@propiedad.Activo</td>
+                            <td>@propiedad.Categoria.NombreCategoria</td>
                             <td>
                                 <NavLink href="@($"editar-propiedad/{propiedad.Id}")" class="btn btn-success"><i class="bi bi-gear-fill"></i>&nbsp; Editar</NavLink>
                                 <button class="btn btn-danger" @onclick="() => ManejadorOnBorrar(propiedad.Id)"><i class="bi bi-trash-fill"></i>&nbsp; Borrar</button>
@@ -65,16 +71,44 @@
     </div>
 </div>
 
+<ConfirmacionBorrado ProcesandoComponentePadre="procesando" CambioConfirmacion="Click_Confirmar_Borrado" />
+
 @code {
     private IEnumerable<PropiedadDTO> propiedadDTO { get; set; } = new List<PropiedadDTO>();
+    private bool procesando { get; set; } = false;
+    private int? BorrarIdPropiedad { get; set; } = null;
 
     protected override async Task OnInitializedAsync()
     {
         propiedadDTO = await PropiedadRepositorio.GetAllPropiedades();
     }
 
-    private async Task ManejadorOnBorrar(int categoriaId)
+    private async Task ManejadorOnBorrar(int propiedadId)
     {
+        BorrarIdPropiedad = propiedadId;
+        await JsRuntime.InvokeVoidAsync("MostrarModalConfirmacionBorrado");
 
+    }
+
+    private async Task Click_Confirmar_Borrado(bool confirmado)
+    {
+        procesando = true;
+        if(confirmado && BorrarIdPropiedad != null)
+        {
+            PropiedadDTO propiedad = await PropiedadRepositorio.GetPropiedad(BorrarIdPropiedad.Value);
+
+            foreach (var imagen in propiedad.ImagenPropiedad)
+            {
+                var nombreImagen = imagen.UrlImagenPropiedad.Replace($"{navigationManager.BaseUri}ImagenesPropiedades/", "");
+                SubidaArchivo.BorrarArchivo(nombreImagen);
+            }
+
+            await PropiedadRepositorio.BorrarPropiedad(BorrarIdPropiedad.Value);
+            await JsRuntime.ToastrSuccess("Propiedad borrada correctamente");
+            propiedadDTO = await PropiedadRepositorio.GetAllPropiedades();
+        }
+
+        await JsRuntime.InvokeVoidAsync("OcultarModalConfirmacionBorrado");
+        procesando = false;
     }
 }

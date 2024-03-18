@@ -2,6 +2,7 @@
 @using Modelos.DTO
 @using Repositorio.IRepositorio
 @inject ICategoriaRepositorio CategoriaRepositorio
+@inject IJSRuntime JsRuntime
 
 <h1 class="text-center">Categorias</h1>
 
@@ -53,9 +54,14 @@
     </div>
 </div>
 
+<ConfirmacionBorrado ProcesandoComponentePadre="procesando" CambioConfirmacion="Click_Confirmar_Borrado" />
+
+
 
 @code {
     private IEnumerable<CategoriaDTO> categoriaDTO { get; set; } = new List<CategoriaDTO>();
+    private bool procesando { get; set; } = false;
+    private int? BorrarIdCategoria { get; set; } = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -64,6 +70,22 @@
 
     private async Task ManejadorOnBorrar(int categoriaId)
     {
-        
+        BorrarIdCategoria = categoriaId;
+        await JsRuntime.InvokeVoidAsync("MostrarModalConfirmacionBorrado");
+    }
+
+    private async Task Click_Confirmar_Borrado(bool confirmado)
+    {
+        procesando = true;
+        if (confirmado && BorrarIdCategoria != null)
+        {
+
+            await CategoriaRepositorio.BorrarCategoria(BorrarIdCategoria.Value);
+            await JsRuntime.ToastrSuccess("Categoría borrada correctamente");
+            categoriaDTO = await CategoriaRepositorio.GetAllCategorias();
+        }
+
+        await JsRuntime.InvokeVoidAsync("OcultarModalConfirmacionBorrado");
+        procesando = false;
     }
 }

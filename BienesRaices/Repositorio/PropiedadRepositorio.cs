@@ -48,7 +48,11 @@ namespace BienesRaices.Repositorio
             var propiedad = await _bd.Propiedad.FindAsync(propiedadId);
             if (propiedad != null)
             {
-                
+                var todasImagenes = await _bd.ImagenPropiedad.
+                    Where(i => i.Id == propiedadId).ToListAsync();
+
+                _bd.ImagenPropiedad.RemoveRange(todasImagenes);
+
                 _bd.Propiedad.Remove(propiedad);
                 return await _bd.SaveChangesAsync();
             }
@@ -70,7 +74,7 @@ namespace BienesRaices.Repositorio
             {
                 IEnumerable<PropiedadDTO> propiedadDTO =
                     _mapper.Map<IEnumerable<Propiedad>, IEnumerable<PropiedadDTO>>
-                    (_bd.Propiedad.Include(x => x.ImagenPropiedad));
+                    (_bd.Propiedad.Include(x => x.ImagenPropiedad).Include(c => c.Categoria));
                 return propiedadDTO;
             }
             catch (Exception ex)
