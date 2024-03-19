@@ -29,6 +29,8 @@ namespace BienesRaices.Modelos.DTO
         public double Precio { get; set; }
         [Required]
         public bool Activo { get; set; }
+        
+        public DateTime FechaActualizacion { get; set; }
 
         public int  CategoriaId { get; set; }
         public virtual Categoria Categoria { get; set; }

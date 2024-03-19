@@ -4,6 +4,9 @@
 @inject ICategoriaRepositorio CategoriaRepositorio
 @inject IJSRuntime JsRuntime
 
+@* Agregando autorización *@
+@attribute [Authorize(Roles = "Publicador, Administrador")]
+
 <h1 class="text-center">Categorias</h1>
 
 <div class="card">

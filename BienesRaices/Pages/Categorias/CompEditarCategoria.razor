@@ -5,6 +5,9 @@
 @inject NavigationManager navigationManager
 @inject IJSRuntime JsRuntime
 
+@* Agregando autorización *@
+@attribute [Authorize(Roles = "Administrador")]
+
 <h1 class="text-center">Crear Categoría</h1>
 
 <div class="card">

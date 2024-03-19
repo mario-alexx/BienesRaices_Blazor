@@ -7,6 +7,9 @@
 @inject NavigationManager navigationManager
 @inject ISubidaArchivo SubidaArchivo
 
+@* Agregando autorización *@
+@attribute [Authorize(Roles = "Publicador, Administrador")]
+
 <h1 class="text-center">Propiedades</h1>
 
 <div class="card">

@@ -9,6 +9,9 @@
 @inject NavigationManager navigationManager
 @inject IJSRuntime JsRuntime
 
+@* Agregando autorización *@
+@attribute [Authorize(Roles = "Administrador")]
+
 <h1 class="text-center">Editar Propiedad</h1>
 
 <div class="card">
